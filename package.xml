@@ -9,9 +9,9 @@
   <maintainer email="130s@lateeye.net">Isaac Saito</maintainer>
   <license>BSD</license>
 
-  <url type="website">http://ros.org/wiki/rqt_launch</url>
-  <url type="repository">https://github.com/ros-visualization/rqt_common_plugins</url>
-  <url type="bugtracker">https://github.com/ros-visualization/rqt_common_plugins/issues</url>
+  <url type="website">http://wiki.ros.org/rqt_launch</url>
+  <url type="repository">https://github.com/ros-visualization/rqt_launch</url>
+  <url type="bugtracker">https://github.com/ros-visualization/rqt_launch/issues</url>
 
   <author>Isaac Saito</author>
   <author>Stuart Glaser</author>
