@@ -6,7 +6,8 @@
   User can also start and end node by node that are defined in those files.
   </description>
 
-  <maintainer email="130s@lateeye.net">Isaac Saito</maintainer>
+  <maintainer email="iisaito@kinugarage.com">Isaac I.Y. Saito</maintainer>
+  <maintainer email="ryan@rwsinnet.com">Ryan Sinnet</maintainer>
   <license>BSD</license>
 
   <url type="website">http://wiki.ros.org/rqt_launch</url>
