@@ -45,7 +45,7 @@ from roslaunch.core import RLException
 import rospkg
 import rospy
 
-#from rqt_console.console_widget import ConsoleWidget
+# from rqt_console.console_widget import ConsoleWidget
 from rqt_launch.node_proxy import NodeProxy
 from rqt_launch.node_controller import NodeController
 from rqt_launch.node_delegate import NodeDelegate
@@ -54,6 +54,7 @@ from rqt_py_common.rqt_roscomm_util import RqtRoscommUtil
 
 
 class LaunchWidget(QDialog):
+
     '''#TODO: comment
     '''
 
@@ -69,7 +70,7 @@ class LaunchWidget(QDialog):
 
         self._config = None
 
-        #TODO: should be configurable from gui
+        # TODO: should be configurable from gui
         self._port_roscore = 11311
 
         self._run_id = None
@@ -97,10 +98,10 @@ class LaunchWidget(QDialog):
         self._pushbutton_stop_all.clicked.connect(self._parent.stop_all)
         # Bind package selection with .launch file selection.
         self._combobox_pkg.currentIndexChanged[str].connect(
-                                                 self._refresh_launchfiles)
+            self._refresh_launchfiles)
         # Bind a launch file selection with launch GUI generation.
         self._combobox_launchfile_name.currentIndexChanged[str].connect(
-                                                 self._load_launchfile_slot)
+            self._load_launchfile_slot)
         self._update_pkgs_contain_launchfiles()
 
         # Used for removing previous nodes
@@ -109,18 +110,18 @@ class LaunchWidget(QDialog):
     def _load_launchfile_slot(self, launchfile_name):
         # Not yet sure why, but everytime combobox.currentIndexChanged occurs,
         # this method gets called twice with launchfile_name=='' in 1st call.
-        if launchfile_name == None or launchfile_name == '':
+        if launchfile_name is None or launchfile_name == '':
             return
 
         _config = None
 
         rospy.logdebug('_load_launchfile_slot launchfile_name={}'.format(
-                                                           launchfile_name))
+            launchfile_name))
 
         try:
             _config = self._create_launchconfig(launchfile_name,
                                                 self._port_roscore)
-            #TODO: folder_name_launchfile should be able to specify arbitrarily
+            # TODO: folder_name_launchfile should be able to specify arbitrarily
             # _create_launchconfig takes 3rd arg for it.
 
         except IndexError as e:
@@ -188,30 +189,30 @@ class LaunchWidget(QDialog):
             status_label = StatusIndicator()
 
             qindex_nodewidget = self._datamodel.index(order_xmlelement,
-                                                       0, QModelIndex())
+                                                      0, QModelIndex())
             node_widget = self._delegate.create_node_widget(qindex_nodewidget,
                                                             proxy.config,
                                                             status_label)
 
-            #TODO: Ideally find a way so that we don't need this block.
-            #BEGIN If these lines are missing, widget won't be shown either.
+            # TODO: Ideally find a way so that we don't need this block.
+            # BEGIN If these lines are missing, widget won't be shown either.
             std_item = QStandardItem(
-                                     #node_widget.get_node_name()
-                                     )
+                # node_widget.get_node_name()
+            )
             self._datamodel.setItem(order_xmlelement, 0, std_item)
-            #END If these lines are missing, widget won't be shown either.
+            # END If these lines are missing, widget won't be shown either.
 
             self._treeview.setIndexWidget(qindex_nodewidget, node_widget)
 
             node_controller = NodeController(proxy, node_widget)
             self._node_controllers.append(node_controller)
 
-            node_widget.connect_start_stop_button( \
-                                       node_controller.start_stop_slot)
+            node_widget.connect_start_stop_button(
+                node_controller.start_stop_slot)
             rospy.logdebug('loop #%d proxy.config.namespace=%s ' +
-                          'proxy.config.name=%s',
-                          order_xmlelement, proxy.config.namespace,
-                          proxy.config.name)
+                           'proxy.config.name=%s',
+                           order_xmlelement, proxy.config.namespace,
+                           proxy.config.name)
 
         self._num_nodes_previous = order_xmlelement
 
@@ -237,14 +238,13 @@ class LaunchWidget(QDialog):
         if package is None or len(package) == 0:
             return
         self._launchfile_instances = []  # Launch[]
-        #TODO: RqtRoscommUtil.list_files's 2nd arg 'subdir' should NOT be
+        # TODO: RqtRoscommUtil.list_files's 2nd arg 'subdir' should NOT be
         # hardcoded later.
         _launch_instance_list = RqtRoscommUtil.list_files(package,
-                                                         'launch')
+                                                          'launch')
 
-        rospy.logdebug('_refresh_launches package={} instance_list={}'.format(
-                                                       package,
-                                                       _launch_instance_list))
+        rospy.logdebug(
+            '_refresh_launches package={} instance_list={}'.format(package, _launch_instance_list))
 
         self._launchfile_instances = [x.split('/')[1]
                                       for x in _launch_instance_list]
@@ -255,7 +255,7 @@ class LaunchWidget(QDialog):
     def load_parameters(self):
         '''Loads all global parameters into roscore.'''
         run_id = self._run_id if self._run_id is not None \
-                 else roslaunch.rlutil.get_or_generate_uuid(None, True)
+            else roslaunch.rlutil.get_or_generate_uuid(None, True)
         runner = roslaunch.ROSLaunchRunner(run_id, self._config)
         runner._load_parameters()
 
@@ -269,10 +269,10 @@ class LaunchWidget(QDialog):
         pass
 
     def restore_settings(self, plugin_settings, instance_settings):
-#        if instance_settings.contains('splitter'):
-#            self._splitter.restoreState(instance_settings.value('splitter'))
-#        else:
-#            self._splitter.setSizes([100, 100, 200])
+        # if instance_settings.contains('splitter'):
+        #     self._splitter.restoreState(instance_settings.value('splitter'))
+        # else:
+        #     self._splitter.setSizes([100, 100, 200])
         pass
 
 

@@ -2,6 +2,7 @@
 
 
 class NamesSurrogate(object):
+
     '''
     Because some functions in roslib.names cannot be referred in the original
     rxlaunch code, the codes of those function are copied here. This class

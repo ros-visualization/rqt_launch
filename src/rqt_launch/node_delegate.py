@@ -44,7 +44,7 @@ class NodeDelegate(QStyledItemDelegate):
                  'launch_prefix_edit']
 
     def __init__(self, master_uri, rospack=None):
-                #respawn_toggle, spawn_count_label, launch_prefix_edit):
+                # respawn_toggle, spawn_count_label, launch_prefix_edit):
         super(NodeDelegate, self).__init__()
         self._master_uri = master_uri
 
@@ -58,7 +58,7 @@ class NodeDelegate(QStyledItemDelegate):
         '''Overridden'''
 
         nodewidget = self._nodewidget_dict[index]
-        #TODO: handle exception
+        # TODO: handle exception
         return nodewidget
 
     def setEditorData(self, spinBox, index):

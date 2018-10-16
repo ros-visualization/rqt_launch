@@ -41,6 +41,7 @@ from rqt_py_common.rqt_roscomm_util import RqtRoscommUtil
 
 
 class LaunchMain(object):
+
     def __init__(self, plugin_context):
         super(LaunchMain, self).__init__()
         self._plugin_context = plugin_context
@@ -52,7 +53,7 @@ class LaunchMain(object):
         self._run_id = None
         self._node_controllers = []
 
-        #RqtRoscommUtil.load_parameters(self._config, '/rqt_launch')
+        # RqtRoscommUtil.load_parameters(self._config, '/rqt_launch')
 
     def get_widget(self):
         return self._mainwidget
@@ -66,7 +67,7 @@ class LaunchMain(object):
     def start_all(self):
         '''
         Checks nodes that's set (via self.set_node_controllers) one by one and
-        starts one if each node is not running. 
+        starts one if each node is not running.
         Then disable START ALL button and enable STOP ALL button.
         '''
         for n in self._node_controllers:
