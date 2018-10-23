@@ -43,6 +43,7 @@ from rqt_launch.name_surrogate import NamesSurrogate
 
 
 class NodeWidget(QWidget):
+
     '''
     Works as a proxy between ROS Node
     (more in particular, roslaunch.nodeprocess) and GUI.
@@ -70,13 +71,12 @@ class NodeWidget(QWidget):
         # stop_button = QPushButton(self.style().standardIcon(
         #                                             QStyle.SP_MediaStop), "")
         self._respawn_toggle.setChecked(self._launch_config.respawn)
-        self._lineEdit_launch_args = QLineEdit(
-                                            self._launch_config.launch_prefix)
+        self._lineEdit_launch_args = QLineEdit(self._launch_config.launch_prefix)
 
         rospy.logdebug('_proxy.conf.namespace={} launch_config={}'.format(
-                      self._launch_config.namespace, self._launch_config.name))
+            self._launch_config.namespace, self._launch_config.name))
         self._resolved_node_name = NamesSurrogate.ns_join(
-                       self._launch_config.namespace, self._launch_config.name)
+            self._launch_config.namespace, self._launch_config.name)
         self._label_nodename.setText(self._get_node_name())
         self._label_pkg_name.setText(self._launch_config.package)
         self._label_name_executable.setText(self._launch_config.type)
@@ -99,22 +99,21 @@ class NodeWidget(QWidget):
     def set_node_started(self, is_started=True):
         # If the button is not down yet
         is_node_running = self._node_controller.is_node_running()
-        rospy.logdebug('NodeWidget.set_node_started running?={}'.format(
-                                                            is_node_running))
-        #if is_node_running:
+        rospy.logdebug('NodeWidget.set_node_started running?={}'.format(is_node_running))
+        # if is_node_running:
         if is_started:
-            #and self._pushbutton_start_stop_node.isDown():
+            # and self._pushbutton_start_stop_node.isDown():
             self._pushbutton_start_stop_node.setIcon(self._icon_node_start)
             self._pushbutton_start_stop_node.setDown(False)
 
-        #elif not is_node_running:  # To START the node
+        # elif not is_node_running:  # To START the node
         else:
-            #and not self._pushbutton_start_stop_node.isDown():
+            # and not self._pushbutton_start_stop_node.isDown():
             self._pushbutton_start_stop_node.setIcon(self._icon_node_stop)
             self._pushbutton_start_stop_node.setDown(True)
 
     def set_node_controller(self, node_controller):
-        #TODO: Null check
+        # TODO: Null check
         self._node_controller = node_controller
-        #self._pushbutton_start_stop_node.pressed.connect(
+        # self._pushbutton_start_stop_node.pressed.connect(
         #                                self._node_controller.start_stop_slot)

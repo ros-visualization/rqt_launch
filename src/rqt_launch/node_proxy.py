@@ -40,19 +40,20 @@ import rospy
 
 
 class Polling(threading.Thread):
+
     def __init__(self, parent):
         super(Polling, self).__init__()
         self._parent = parent
 
     def run(self):
         while True:
-            rospy.logdebug('Proc={} Died? {}'.format(
-                                               self._parent.get_proc_name(),
-                                               self._parent.has_died()))
+            rospy.logdebug('Proc={} Died? {}'.format(self._parent.get_proc_name(),
+                                                     self._parent.has_died()))
             time.sleep(1.0)
 
 
 class NodeProxy(object):
+
     '''
     Works as a proxy between ROS Node
     (more in particular, roslaunch.nodeprocess) & GUI.
@@ -71,12 +72,12 @@ class NodeProxy(object):
     # LocalProcess.is_alive() does not do what you would expect
     def is_running(self):
         rospy.logdebug('BEFORE started={}, stopped={} alive={}'.format(
-                                                     self._process.started,
-                                                     self._process.stopped,
-                                                     self._process.is_alive()))
+            self._process.started,
+            self._process.stopped,
+            self._process.is_alive()))
         return self._process.started and not self._process.stopped
-                #and self._process.is_alive()
-                #  is_alive() returns False once nodeprocess was stopped.
+        # and self._process.is_alive()
+        #  is_alive() returns False once nodeprocess was stopped.
 
     def has_died(self):
         rospy.logdebug('Proc={} started={}, stopped={}, is_alive={}'.format(
@@ -94,25 +95,25 @@ class NodeProxy(object):
         _local_process = nodeprocess.LocalProcess
         try:
             _local_process = nodeprocess.create_node_process(
-                                    self._run_id, self.config, self.master_uri)
+                self._run_id, self.config, self.master_uri)
         except node_args.NodeParamsException as e:
             rospy.logerr('roslaunch failed to load the node. {}'.format(
-                                                                   e.message))
-            #TODO: Show msg on GUI that the node wasn't loaded.
+                e.message))
+            # TODO: Show msg on GUI that the node wasn't loaded.
 
         return _local_process
 
     def start_process(self):
-        #TODO: add null exception check for _process
+        # TODO: add null exception check for _process
         self._process.start()
 
     def stop_process(self):
-        #TODO: add null exception check for _process
+        # TODO: add null exception check for _process
 
         try:
             self._process.stop()
         except Exception as e:
-            #TODO: Change roslaunch to raise exception
+            # TODO: Change roslaunch to raise exception
             rospy.logdebug('Proxy stop_process exception={}'.format(e.message))
 
     def get_spawn_count(self):
