@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+# coding=utf-8
 
 import rospy
 
@@ -6,29 +6,29 @@ import rospy
 # Provides callback functions for the start and stop buttons
 class NodeController(object):
 
-    '''
+    """
     Containing both proxy and gui instances, this class gives a control of
     a node on both ROS & GUI sides.
-    '''
+    """
 
     def __init__(self, proxy, gui):
-        '''
+        """
         @type proxy: rqt_launch.NodeProxy
         @type gui: QWidget
-        '''
+        """
         self._proxy = proxy
 
         self._gui = gui
         self._gui.set_node_controller(self)
 
     def start_stop_slot(self, signal):
-        '''
+        """
         Works as a slot particularly intended to work for
         QAbstractButton::toggled(checked). Internally calls
         NodeController.start / stop depending on `signal`.
 
         @type signal: bool
-        '''
+        """
         if self._proxy.is_running():
             self.stop()
             rospy.logdebug('---start_stop_slot stOP')
@@ -37,9 +37,9 @@ class NodeController(object):
             rospy.logdebug('==start_stop_slot StART')
 
     def start(self, restart=True):
-        '''
+        """
         Start a ROS node as a new _process.
-        '''
+        """
         rospy.logdebug('Controller.start restart={}'.format(restart))
 
         # Should be almost unreachable under current design where this 'start'
@@ -55,8 +55,13 @@ class NodeController(object):
             self.stop()
 
         # If the launch_prefix has changed, then the _process must be recreated
-        if (self._proxy.config.launch_prefix != self._gui._lineEdit_launch_args.text()):
-            self._proxy.config.launch_prefix = self._gui._lineEdit_launch_args.text()
+        if (
+            self._proxy.config.launch_prefix
+            != self._gui._lineEdit_launch_args.text()
+        ):
+            self._proxy.config.launch_prefix = (
+                self._gui._lineEdit_launch_args.text()
+            )
             self._proxy.recreate_process()
 
         self._gui.set_node_started(False)
@@ -66,9 +71,9 @@ class NodeController(object):
         self._gui.label_spawncount.setText(self._get_spawn_count_text())
 
     def stop(self):
-        '''
+        """
         Stop a ROS node's _process.
-        '''
+        """
 
         # TODO: Need to check if the node is really running.
 
@@ -90,16 +95,18 @@ class NodeController(object):
 
             # Checks if it should be respawned
             if self._gui.respawn_toggle.isChecked():
-                rospy.loginfo("Respawning _process: {}".format(self._proxy._process.name))
+                rospy.loginfo(
+                    "Respawning _process: {}".format(self._proxy._process.name)
+                )
                 self._gui.label_status.set_starting()
                 self._proxy.start_process()
                 self._gui.label_status.set_running()
                 self._gui.label_spawncount.setText(self._get_spawn_count_text())
 
     def get_node_widget(self):
-        '''
+        """
         @rtype: QWidget
-        '''
+        """
         return self._gui
 
     def is_node_running(self):

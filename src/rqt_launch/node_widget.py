@@ -1,3 +1,4 @@
+# coding=utf-8
 # Software License Agreement (BSD License)
 #
 # Copyright (c) 2013, Willow Garage, Inc.
@@ -44,39 +45,45 @@ from rqt_launch.name_surrogate import NamesSurrogate
 
 class NodeWidget(QWidget):
 
-    '''
+    """
     Works as a proxy between ROS Node
     (more in particular, roslaunch.nodeprocess) and GUI.
-    '''
+    """
 
     __slots__ = ['_run_id', 'master_uri', 'config', '_process']
 
-    def __init__(self, rospack, master_uri, launch_config,
-                 label_status):
-        '''
+    def __init__(self, rospack, master_uri, launch_config, label_status):
+        """
         @type launch_node: roslaunch.core.Node
         @type launch_config: roslaunch.core.Config
         @type label_status: StatusIndicator
-        '''
+        """
         super(NodeWidget, self).__init__()
         self._rospack = rospack
         self._master_uri = master_uri
         self._launch_config = launch_config
 
-        ui_file = os.path.join(self._rospack.get_path('rqt_launch'),
-                               'resource', 'node_widget.ui')
+        ui_file = os.path.join(
+            self._rospack.get_path('rqt_launch'), 'resource', 'node_widget.ui'
+        )
         loadUi(ui_file, self)
 
         self.label_status = label_status  # Public
         # stop_button = QPushButton(self.style().standardIcon(
         #                                             QStyle.SP_MediaStop), "")
         self._respawn_toggle.setChecked(self._launch_config.respawn)
-        self._lineEdit_launch_args = QLineEdit(self._launch_config.launch_prefix)
+        self._lineEdit_launch_args = QLineEdit(
+            self._launch_config.launch_prefix
+        )
 
-        rospy.logdebug('_proxy.conf.namespace={} launch_config={}'.format(
-            self._launch_config.namespace, self._launch_config.name))
+        rospy.logdebug(
+            '_proxy.conf.namespace={} launch_config={}'.format(
+                self._launch_config.namespace, self._launch_config.name
+            )
+        )
         self._resolved_node_name = NamesSurrogate.ns_join(
-            self._launch_config.namespace, self._launch_config.name)
+            self._launch_config.namespace, self._launch_config.name
+        )
         self._label_nodename.setText(self._get_node_name())
         self._label_pkg_name.setText(self._launch_config.package)
         self._label_name_executable.setText(self._launch_config.type)
@@ -99,7 +106,9 @@ class NodeWidget(QWidget):
     def set_node_started(self, is_started=True):
         # If the button is not down yet
         is_node_running = self._node_controller.is_node_running()
-        rospy.logdebug('NodeWidget.set_node_started running?={}'.format(is_node_running))
+        rospy.logdebug(
+            'NodeWidget.set_node_started running?={}'.format(is_node_running)
+        )
         # if is_node_running:
         if is_started:
             # and self._pushbutton_start_stop_node.isDown():

@@ -1,3 +1,4 @@
+# coding=utf-8
 # Software License Agreement (BSD License)
 #
 # Copyright (c) 2012, Willow Garage, Inc.
@@ -41,14 +42,14 @@ from rqt_py_common.rqt_roscomm_util import RqtRoscommUtil
 
 
 class LaunchMain(object):
-
     def __init__(self, plugin_context):
         super(LaunchMain, self).__init__()
         self._plugin_context = plugin_context
 
         self._main_launch_widget = LaunchWidget(self)
-        self._mainwidget = PluginContainerWidget(self._main_launch_widget,
-                                                 True, False)
+        self._mainwidget = PluginContainerWidget(
+            self._main_launch_widget, True, False
+        )
 
         self._run_id = None
         self._node_controllers = []
@@ -65,11 +66,11 @@ class LaunchMain(object):
         self._main_launch_widget.load_parameters()
 
     def start_all(self):
-        '''
+        """
         Checks nodes that's set (via self.set_node_controllers) one by one and
         starts one if each node is not running.
         Then disable START ALL button and enable STOP ALL button.
-        '''
+        """
         for n in self._node_controllers:
             if not n.is_node_running():
                 n.start(restart=False)
@@ -79,11 +80,11 @@ class LaunchMain(object):
         self._main_launch_widget._pushbutton_stop_all.setEnabled(True)
 
     def stop_all(self):
-        '''
+        """
         Checks nodes that's set (via self.set_node_controllers) one by one and
         stops one if each node is running.
         Then enable START ALL button and disable STOP ALL button.
-        '''
+        """
         for n in self._node_controllers:
             if n.is_node_running():
                 n.stop()
@@ -111,5 +112,6 @@ if __name__ == '__main__':
     # main should be used only for debug purpose.
     # This launches this QWidget as a standalone rqt gui.
     from rqt_gui.main import Main
+
     main = Main()
     sys.exit(main.main(sys.argv, standalone='rqt_launch'))

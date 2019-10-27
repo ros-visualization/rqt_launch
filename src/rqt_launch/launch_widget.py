@@ -1,3 +1,4 @@
+# coding=utf-8
 # Software License Agreement (BSD License)
 #
 # Copyright (c) 2012, Willow Garage, Inc.
@@ -55,16 +56,13 @@ from rqt_py_common.rqt_roscomm_util import RqtRoscommUtil
 
 class LaunchWidget(QDialog):
 
-    '''#TODO: comment
-    '''
-
     # To be connected to PluginContainerWidget
     sig_sysmsg = Signal(str)
 
     def __init__(self, parent):
-        '''
+        """
         @type parent: LaunchMain
-        '''
+        """
         super(LaunchWidget, self).__init__()
         self._parent = parent
 
@@ -76,8 +74,9 @@ class LaunchWidget(QDialog):
         self._run_id = None
 
         self._rospack = rospkg.RosPack()
-        ui_file = os.path.join(self._rospack.get_path('rqt_launch'),
-                               'resource', 'launch_widget.ui')
+        ui_file = os.path.join(
+            self._rospack.get_path('rqt_launch'), 'resource', 'launch_widget.ui'
+        )
         loadUi(ui_file, self)
 
         # row=0 allows any number of rows to be added.
@@ -85,8 +84,7 @@ class LaunchWidget(QDialog):
 
         master_uri = rosenv.get_master_uri()
         rospy.loginfo('LaunchWidget master_uri={}'.format(master_uri))
-        self._delegate = NodeDelegate(master_uri,
-                                      self._rospack)
+        self._delegate = NodeDelegate(master_uri, self._rospack)
         self._treeview.setModel(self._datamodel)
         self._treeview.setItemDelegate(self._delegate)
 
@@ -98,10 +96,12 @@ class LaunchWidget(QDialog):
         self._pushbutton_stop_all.clicked.connect(self._parent.stop_all)
         # Bind package selection with .launch file selection.
         self._combobox_pkg.currentIndexChanged[str].connect(
-            self._refresh_launchfiles)
+            self._refresh_launchfiles
+        )
         # Bind a launch file selection with launch GUI generation.
         self._combobox_launchfile_name.currentIndexChanged[str].connect(
-            self._load_launchfile_slot)
+            self._load_launchfile_slot
+        )
         self._update_pkgs_contain_launchfiles()
 
         # Used for removing previous nodes
@@ -115,48 +115,60 @@ class LaunchWidget(QDialog):
 
         _config = None
 
-        rospy.logdebug('_load_launchfile_slot launchfile_name={}'.format(
-            launchfile_name))
+        rospy.logdebug(
+            '_load_launchfile_slot launchfile_name={}'.format(launchfile_name)
+        )
 
         try:
-            _config = self._create_launchconfig(launchfile_name,
-                                                self._port_roscore)
+            _config = self._create_launchconfig(
+                launchfile_name, self._port_roscore
+            )
             # TODO: folder_name_launchfile should be able to specify arbitrarily
             # _create_launchconfig takes 3rd arg for it.
 
         except IndexError as e:
-            msg = 'IndexError={} launchfile={}'.format(e.message,
-                                                       launchfile_name)
+            msg = 'IndexError={} launchfile={}'.format(
+                e.message, launchfile_name
+            )
             rospy.logerr(msg)
             self.sig_sysmsg.emit(msg)
             return
         except RLException as e:
-            msg = 'RLException={} launchfile={}'.format(e.message,
-                                                        launchfile_name)
+            msg = 'RLException={} launchfile={}'.format(
+                e.message, launchfile_name
+            )
             rospy.logerr(msg)
             self.sig_sysmsg.emit(msg)
             return
 
         self._create_widgets_for_launchfile(_config)
 
-    def _create_launchconfig(self, launchfile_name, port_roscore=11311,
-                             folder_name_launchfile='launch'):
-        '''
+    def _create_launchconfig(
+        self,
+        launchfile_name,
+        port_roscore=11311,
+        folder_name_launchfile='launch',
+    ):
+        """
         @rtype: ROSLaunchConfig
         @raises RLException: raised by roslaunch.config.load_config_default.
-        '''
+        """
 
         pkg_name = self._combobox_pkg.currentText()
 
         try:
-            launchfile = os.path.join(self._rospack.get_path(pkg_name),
-                                      folder_name_launchfile, launchfile_name)
+            launchfile = os.path.join(
+                self._rospack.get_path(pkg_name),
+                folder_name_launchfile,
+                launchfile_name,
+            )
         except IndexError as e:
             raise RLException('IndexError: {}'.format(e.message))
 
         try:
-            launch_config = roslaunch.config.load_config_default([launchfile],
-                                                                 port_roscore)
+            launch_config = roslaunch.config.load_config_default(
+                [launchfile], port_roscore
+            )
         except rospkg.common.ResourceNotFound as e:
             raise RLException('ResourceNotFound: {}'.format(e.message))
         except RLException as e:
@@ -188,11 +200,12 @@ class LaunchWidget(QDialog):
             # TODO: consider using QIcon.fromTheme()
             status_label = StatusIndicator()
 
-            qindex_nodewidget = self._datamodel.index(order_xmlelement,
-                                                      0, QModelIndex())
-            node_widget = self._delegate.create_node_widget(qindex_nodewidget,
-                                                            proxy.config,
-                                                            status_label)
+            qindex_nodewidget = self._datamodel.index(
+                order_xmlelement, 0, QModelIndex()
+            )
+            node_widget = self._delegate.create_node_widget(
+                qindex_nodewidget, proxy.config, status_label
+            )
 
             # TODO: Ideally find a way so that we don't need this block.
             # BEGIN If these lines are missing, widget won't be shown either.
@@ -208,23 +221,29 @@ class LaunchWidget(QDialog):
             self._node_controllers.append(node_controller)
 
             node_widget.connect_start_stop_button(
-                node_controller.start_stop_slot)
-            rospy.logdebug('loop #%d proxy.config.namespace=%s ' +
-                           'proxy.config.name=%s',
-                           order_xmlelement, proxy.config.namespace,
-                           proxy.config.name)
+                node_controller.start_stop_slot
+            )
+            rospy.logdebug(
+                'loop #%d proxy.config.namespace=%s ' + 'proxy.config.name=%s',
+                order_xmlelement,
+                proxy.config.namespace,
+                proxy.config.name,
+            )
 
         self._num_nodes_previous = order_xmlelement
 
         self._parent.set_node_controllers(self._node_controllers)
 
     def _update_pkgs_contain_launchfiles(self):
-        '''
+        """
         Inspired by rqt_msg.MessageWidget._update_pkgs_contain_launchfiles
-        '''
-        packages = sorted([pkg_tuple[0]
-                           for pkg_tuple
-                           in RqtRoscommUtil.iterate_packages('launch')])
+        """
+        packages = sorted(
+            [
+                pkg_tuple[0]
+                for pkg_tuple in RqtRoscommUtil.iterate_packages('launch')
+            ]
+        )
         self._package_list = packages
         rospy.logdebug('pkgs={}'.format(self._package_list))
         self._combobox_pkg.clear()
@@ -232,35 +251,44 @@ class LaunchWidget(QDialog):
         self._combobox_pkg.setCurrentIndex(0)
 
     def _refresh_launchfiles(self, package=None):
-        '''
+        """
         Inspired by rqt_msg.MessageWidget._refresh_msgs
-        '''
+        """
         if package is None or len(package) == 0:
             return
         self._launchfile_instances = []  # Launch[]
         # TODO: RqtRoscommUtil.list_files's 2nd arg 'subdir' should NOT be
         # hardcoded later.
-        _launch_instance_list = RqtRoscommUtil.list_files(package,
-                                                          'launch')
+        _launch_instance_list = RqtRoscommUtil.list_files(package, 'launch')
 
         rospy.logdebug(
-            '_refresh_launches package={} instance_list={}'.format(package, _launch_instance_list))
+            '_refresh_launches package={} instance_list={}'.format(
+                package, _launch_instance_list
+            )
+        )
 
-        self._launchfile_instances = [x.split('/')[1]
-                                      for x in _launch_instance_list]
+        self._launchfile_instances = [
+            x.split('/')[1] for x in _launch_instance_list
+        ]
 
         self._combobox_launchfile_name.clear()
         self._combobox_launchfile_name.addItems(self._launchfile_instances)
 
     def load_parameters(self):
-        '''Loads all global parameters into roscore.'''
-        run_id = self._run_id if self._run_id is not None \
+        """
+        Loads all global parameters into roscore.
+        """
+        run_id = (
+            self._run_id
+            if self._run_id is not None
             else roslaunch.rlutil.get_or_generate_uuid(None, True)
+        )
         runner = roslaunch.ROSLaunchRunner(run_id, self._config)
         runner._load_parameters()
 
-        msg = 'Loaded %d parameters to parameter server.' \
-              % len(self._config.params)
+        msg = 'Loaded %d parameters to parameter server.' % len(
+            self._config.params
+        )
         self.sig_sysmsg.emit(msg)
         rospy.logdebug(msg)
 
