@@ -59,10 +59,13 @@ class NodeDelegate(QStyledItemDelegate):
 
         self._nodewidget_dict = {}  # { QModelIndex : QWidget }
 
-    def createEditor(self, parent, option, index):
-        nodewidget = self._nodewidget_dict[index]
-        # TODO: handle exception
-        return nodewidget
+    def createEditor(self, _parent, _option, index):
+        try:
+            nodewidget = self._nodewidget_dict[index]
+        except KeyError:
+            return None
+        else:
+            return nodewidget
 
     def setEditorData(self, spinBox, index):
         value = index.model().data(index, Qt.EditRole)
