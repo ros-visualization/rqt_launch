@@ -104,9 +104,6 @@ class LaunchWidget(QDialog):
         )
         self._update_pkgs_contain_launchfiles()
 
-        # Used for removing previous nodes
-        self._num_nodes_previous = 0
-
     def _load_launchfile_slot(self, launchfile_name):
         # Not yet sure why, but everytime combobox.currentIndexChanged occurs,
         # this method gets called twice with launchfile_name=='' in 1st call.
@@ -144,10 +141,7 @@ class LaunchWidget(QDialog):
         self._create_widgets_for_launchfile(_config)
 
     def _create_launchconfig(
-        self,
-        launchfile_name,
-        port_roscore=11311,
-        folder_name_launchfile='launch',
+        self, launchfile_name, port_roscore, folder_name_launchfile='launch'
     ):
         """
         @rtype: ROSLaunchConfig
@@ -181,41 +175,24 @@ class LaunchWidget(QDialog):
 
         # Delete old nodes' GUIs.
         self._node_controllers = []
+        self._delegate.clear_node_widgets()
+        # reset the data model
+        self._datamodel.clear()
+        self._datamodel.setRowCount(len(self._config.nodes))
 
-        # These lines seem to remove indexWidgets previously set on treeview.
-        # Per suggestion in API doc, we are not using reset(). Instead,
-        # using 2 methods below without any operation in between, which
-        # I suspect might be inproper.
-        # http://qt-project.org/doc/qt-4.8/qabstractitemmodel.html#reset
-        self._datamodel.beginResetModel()
-        self._datamodel.endResetModel()
-
-        # Need to store the num of nodes outside of the loop -- this will
-        # be used for removing excessive previous node rows.
-        order_xmlelement = 0
         # Loop per xml element
-        for order_xmlelement, node in enumerate(self._config.nodes):
+        for i, node in enumerate(self._config.nodes):
             proxy = NodeProxy(self._run_id, self._config.master.uri, node)
 
-            # TODO: consider using QIcon.fromTheme()
-            status_label = StatusIndicator()
-
-            qindex_nodewidget = self._datamodel.index(
-                order_xmlelement, 0, QModelIndex()
-            )
+            nodewidget_index = self._datamodel.index(i, 0, QModelIndex())
             node_widget = self._delegate.create_node_widget(
-                qindex_nodewidget, proxy.config, status_label
+                nodewidget_index, proxy.config, StatusIndicator()
             )
 
-            # TODO: Ideally find a way so that we don't need this block.
-            # BEGIN If these lines are missing, widget won't be shown either.
-            std_item = QStandardItem(
-                # node_widget.get_node_name()
-            )
-            self._datamodel.setItem(order_xmlelement, 0, std_item)
-            # END If these lines are missing, widget won't be shown either.
-
-            self._treeview.setIndexWidget(qindex_nodewidget, node_widget)
+            # TODO: use tree view delegates correctly instead of
+            # empty QStandardItemModel
+            self._datamodel.setItem(i, QStandardItem())
+            self._treeview.setIndexWidget(nodewidget_index, node_widget)
 
             node_controller = NodeController(proxy, node_widget)
             self._node_controllers.append(node_controller)
@@ -225,12 +202,10 @@ class LaunchWidget(QDialog):
             )
             rospy.logdebug(
                 'loop #%d proxy.config.namespace=%s ' + 'proxy.config.name=%s',
-                order_xmlelement,
+                i,
                 proxy.config.namespace,
                 proxy.config.name,
             )
-
-        self._num_nodes_previous = order_xmlelement
 
         self._parent.set_node_controllers(self._node_controllers)
 

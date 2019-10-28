@@ -91,5 +91,8 @@ class NodeDelegate(QStyledItemDelegate):
         self._nodewidget_dict[qindex] = nodewidget
         return nodewidget
 
+    def clear_node_widgets(self):
+        self._nodewidget_dict.clear()
+
     def get_node_widget(self):
         return self._node_widget
