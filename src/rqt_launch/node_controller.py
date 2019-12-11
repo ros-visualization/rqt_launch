@@ -1,15 +1,18 @@
 # coding=utf-8
 
 import rospy
+from roscpp.srv import SetLoggerLevel, SetLoggerLevelRequest
 
 
 # Provides callback functions for the start and stop buttons
 class NodeController(object):
-
     """
     Containing both proxy and gui instances, this class gives a control of
     a node on both ROS & GUI sides.
     """
+
+    SET_LOG_LEVEL_TIMOUT_S = 5.0
+    DEFAULT_LOG_LEVEL = 'info'
 
     def __init__(self, proxy, gui):
         """
@@ -20,6 +23,13 @@ class NodeController(object):
 
         self._gui = gui
         self._gui.set_node_controller(self)
+
+        self._gui._pushbutton_start_stop_node.toggled.connect(
+            self.start_stop_slot
+        )
+        log_level = self._gui._comboBox_log_level.currentIndexChanged.connect(
+            self._update_log_level
+        )
 
     def start_stop_slot(self, signal):
         """
@@ -69,6 +79,9 @@ class NodeController(object):
         self._proxy.start_process()
         self._gui.label_status.set_running()
         self._gui.label_spawncount.setText(self._get_spawn_count_text())
+        log_level = self._gui._comboBox_log_level.currentIndex()
+        if log_level > 0:
+            self._update_log_level(log_level)
 
     def stop(self):
         """
@@ -114,3 +127,25 @@ class NodeController(object):
 
     def _get_spawn_count_text(self):
         return "({})".format(self._proxy.get_spawn_count())
+
+    def _update_log_level(self, log_level):
+        if not self.is_node_running():
+            return
+        if log_level == 0:
+            level = self.DEFAULT_LOG_LEVEL
+        else:
+            level = ['debug', 'info', 'warn', 'error', 'fatal'][log_level - 1]
+        self._set_logger_level(self._gui.get_node_name(), level)
+
+    @staticmethod
+    def _set_logger_level(node, level):
+        service = rospy.ServiceProxy(
+            '{}/set_logger_level'.format(node), SetLoggerLevel
+        )
+        try:
+            service.wait_for_service(
+                timeout=NodeController.SET_LOG_LEVEL_TIMOUT_S
+            )
+            service(SetLoggerLevelRequest(logger='rosout', level=level))
+        except rospy.ROSException:
+            rospy.logerr("Setting logger level failed.")

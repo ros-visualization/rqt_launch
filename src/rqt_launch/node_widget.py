@@ -84,7 +84,7 @@ class NodeWidget(QWidget):
         self._resolved_node_name = NamesSurrogate.ns_join(
             self._launch_config.namespace, self._launch_config.name
         )
-        self._label_nodename.setText(self._get_node_name())
+        self._label_nodename.setText(self.get_node_name())
         self._label_pkg_name.setText(self._launch_config.package)
         self._label_name_executable.setText(self._launch_config.type)
 
@@ -97,11 +97,8 @@ class NodeWidget(QWidget):
 
         self._node_controller = None  # Connected in self.set_node_controller
 
-    def _get_node_name(self):
+    def get_node_name(self):
         return self._resolved_node_name
-
-    def connect_start_stop_button(self, slot):
-        self._pushbutton_start_stop_node.toggled.connect(slot)
 
     def set_node_started(self, is_started=True):
         # If the button is not down yet

@@ -211,9 +211,6 @@ class LaunchWidget(QDialog):
             node_controller = NodeController(proxy, node_widget)
             self._node_controllers.append(node_controller)
 
-            node_widget.connect_start_stop_button(
-                node_controller.start_stop_slot
-            )
             rospy.logdebug(
                 'loop #%d proxy.config.namespace=%s ' + 'proxy.config.name=%s',
                 i,
