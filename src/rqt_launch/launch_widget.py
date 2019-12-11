@@ -98,6 +98,9 @@ class LaunchWidget(QDialog):
         self._pushbutton_load_params.clicked.connect(self._parent.load_params)
         self._pushbutton_start_all.clicked.connect(self._parent.start_all)
         self._pushbutton_stop_all.clicked.connect(self._parent.stop_all)
+        self._pushbutton_refresh.clicked.connect(
+            self._update_pkgs_contain_launchfiles
+        )
         # Bind package selection with .launch file selection.
         self._combobox_pkg.currentIndexChanged[str].connect(
             self._refresh_launchfiles
