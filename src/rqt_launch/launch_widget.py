@@ -178,6 +178,7 @@ class LaunchWidget(QDialog):
         self._delegate.clear_node_widgets()
         # reset the data model
         self._datamodel.clear()
+        self._datamodel.setColumnCount(1)
         self._datamodel.setRowCount(len(self._config.nodes))
 
         # Loop per xml element
