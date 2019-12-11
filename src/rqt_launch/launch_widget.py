@@ -37,7 +37,7 @@ import os
 import sys
 
 from python_qt_binding import loadUi
-from python_qt_binding.QtCore import QModelIndex, Signal
+from python_qt_binding.QtCore import QModelIndex, QSettings, Signal
 from python_qt_binding.QtGui import QStandardItem, QStandardItemModel
 from python_qt_binding.QtWidgets import QDialog
 from rosgraph import rosenv
@@ -67,6 +67,10 @@ class LaunchWidget(QDialog):
         self._parent = parent
 
         self._config = None
+        self._settings = QSettings('ros', 'rqt_launch')
+        self._settings.sync()
+        self._package_update = False
+        self._launchfile_update = False
 
         # TODO: should be configurable from gui
         self._port_roscore = 11311
@@ -107,8 +111,14 @@ class LaunchWidget(QDialog):
     def _load_launchfile_slot(self, launchfile_name):
         # Not yet sure why, but everytime combobox.currentIndexChanged occurs,
         # this method gets called twice with launchfile_name=='' in 1st call.
-        if launchfile_name is None or launchfile_name == '':
+        if (
+            launchfile_name is None
+            or launchfile_name == ''
+            or self._launchfile_update
+        ):
             return
+        self._settings.setValue('launchfile_name', launchfile_name)
+        self._settings.sync()
 
         _config = None
 
@@ -214,6 +224,7 @@ class LaunchWidget(QDialog):
         """
         Inspired by rqt_msg.MessageWidget._update_pkgs_contain_launchfiles
         """
+        self._package_update = True
         packages = sorted(
             [
                 pkg_tuple[0]
@@ -222,16 +233,26 @@ class LaunchWidget(QDialog):
         )
         self._package_list = packages
         rospy.logdebug('pkgs={}'.format(self._package_list))
+        previous_package = self._settings.value('package', '')
         self._combobox_pkg.clear()
         self._combobox_pkg.addItems(self._package_list)
-        self._combobox_pkg.setCurrentIndex(0)
+        if previous_package in self._package_list:
+            index = self._package_list.index(previous_package)
+        else:
+            index = 0
+        self._package_update = False
+        self._combobox_pkg.setCurrentIndex(index)
 
     def _refresh_launchfiles(self, package=None):
         """
         Inspired by rqt_msg.MessageWidget._refresh_msgs
         """
-        if package is None or len(package) == 0:
+        if package is None or len(package) == 0 or self._package_update:
             return
+        self._launchfile_update = True
+        previous_launchfile = self._settings.value('launchfile_name', '')
+        self._settings.setValue('package', package)
+        self._settings.sync()
         self._launchfile_instances = []  # Launch[]
         # TODO: RqtRoscommUtil.list_files's 2nd arg 'subdir' should NOT be
         # hardcoded later.
@@ -249,6 +270,12 @@ class LaunchWidget(QDialog):
 
         self._combobox_launchfile_name.clear()
         self._combobox_launchfile_name.addItems(self._launchfile_instances)
+        if previous_launchfile in self._launchfile_instances:
+            index = self._launchfile_instances.index(previous_launchfile)
+        else:
+            index = 0
+        self._launchfile_update = False
+        self._combobox_launchfile_name.setCurrentIndex(index)
 
     def load_parameters(self):
         """
