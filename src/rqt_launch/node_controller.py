@@ -147,5 +147,5 @@ class NodeController(object):
                 timeout=NodeController.SET_LOG_LEVEL_TIMOUT_S
             )
             service(SetLoggerLevelRequest(logger='rosout', level=level))
-        except rospy.ROSException:
+        except (rospy.ROSException, rospy.service.ServiceException):
             rospy.logerr("Setting logger level failed.")
