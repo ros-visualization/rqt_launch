@@ -46,13 +46,13 @@ class LaunchMain(object):
         super(LaunchMain, self).__init__()
         self._plugin_context = plugin_context
 
+        self._run_id = None
+        self._node_controllers = []
+
         self._main_launch_widget = LaunchWidget(self)
         self._mainwidget = PluginContainerWidget(
             self._main_launch_widget, True, False
         )
-
-        self._run_id = None
-        self._node_controllers = []
 
         # RqtRoscommUtil.load_parameters(self._config, '/rqt_launch')
 

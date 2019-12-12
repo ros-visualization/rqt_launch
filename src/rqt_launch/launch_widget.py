@@ -187,7 +187,7 @@ class LaunchWidget(QDialog):
         self._config = config
 
         # Delete old nodes' GUIs.
-        self._node_controllers = []
+        del self._node_controllers[:]
         self._delegate.clear_node_widgets()
         # reset the data model
         self._datamodel.clear()
