@@ -75,10 +75,6 @@ class LaunchMain(object):
             if not n.is_node_running():
                 n.start(restart=False)
 
-        # Disable START ALL button.
-        self._main_launch_widget._pushbutton_start_all.setEnabled(False)
-        self._main_launch_widget._pushbutton_stop_all.setEnabled(True)
-
     def stop_all(self):
         """
         Checks nodes that's set (via self.set_node_controllers) one by one and
@@ -88,10 +84,6 @@ class LaunchMain(object):
         for n in self._node_controllers:
             if n.is_node_running():
                 n.stop()
-
-        # Disable STOP ALL button.
-        self._main_launch_widget._pushbutton_start_all.setEnabled(True)
-        self._main_launch_widget._pushbutton_stop_all.setEnabled(False)
 
     def check_process_statuses(self):
         for n in self._node_controllers:
