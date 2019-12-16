@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(rqt_launch)
 # Load catkin and all dependencies required for this package
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS rqt_py_common)
 catkin_package()
 catkin_python_setup()
 
@@ -13,6 +13,6 @@ install(DIRECTORY resource
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
-catkin_install_python(PROGRAMS scripts/rqt_launch
+catkin_install_python(PROGRAMS scripts/${PROJECT_NAME}
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
