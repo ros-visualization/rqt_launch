@@ -63,7 +63,7 @@ class NodeController(object):
         self._gui.label_status.set_starting()
         self._proxy.start_process()
         self._gui.label_status.set_running()
-        self._gui.label_spawncount.setText("({})".format(self._proxy.get_spawn_count()))
+        self._gui.label_spawncount.setText(self._get_spawn_count_text())
 
     def stop(self):
         '''
@@ -94,8 +94,7 @@ class NodeController(object):
                 self._gui.label_status.set_starting()
                 self._proxy.start_process()
                 self._gui.label_status.set_running()
-                self._gui.label_spawncount.setText("({})".format(
-                    self._proxy._process.spawn_count))
+                self._gui.label_spawncount.setText(self._get_spawn_count_text())
 
     def get_node_widget(self):
         '''
@@ -105,3 +104,6 @@ class NodeController(object):
 
     def is_node_running(self):
         return self._proxy.is_running()
+
+    def _get_spawn_count_text(self):
+        return "({})".format(self._proxy.get_spawn_count())
