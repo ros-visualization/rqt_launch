@@ -137,16 +137,12 @@ class LaunchWidget(QDialog):
             # _create_launchconfig takes 3rd arg for it.
 
         except IndexError as e:
-            msg = 'IndexError={} launchfile={}'.format(
-                e.message, launchfile_name
-            )
+            msg = 'IndexError={} launchfile={}'.format(e, launchfile_name)
             rospy.logerr(msg)
             self.sig_sysmsg.emit(msg)
             return
         except RLException as e:
-            msg = 'RLException={} launchfile={}'.format(
-                e.message, launchfile_name
-            )
+            msg = 'RLException={} launchfile={}'.format(e, launchfile_name)
             rospy.logerr(msg)
             self.sig_sysmsg.emit(msg)
             return
@@ -170,14 +166,14 @@ class LaunchWidget(QDialog):
                 launchfile_name,
             )
         except IndexError as e:
-            raise RLException('IndexError: {}'.format(e.message))
+            raise RLException('IndexError: {}'.format(e))
 
         try:
             launch_config = roslaunch.config.load_config_default(
                 [launchfile], port_roscore
             )
         except rospkg.common.ResourceNotFound as e:
-            raise RLException('ResourceNotFound: {}'.format(e.message))
+            raise RLException('ResourceNotFound: {}'.format(e))
         except RLException as e:
             raise e
 
