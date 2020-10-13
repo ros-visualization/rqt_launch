@@ -2,8 +2,8 @@
 Changelog for package rqt_launch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.9 (2020-10-13)
+------------------
 * fix shebang line for Python 3 (`#24 <https://github.com/ros-visualization/rqt_launch/issues/24>`_)
 * refactor get spawn count text (`#23 <https://github.com/ros-visualization/rqt_launch/issues/23>`_)
 * bump CMake minimum version to avoid CMP0048 warning
