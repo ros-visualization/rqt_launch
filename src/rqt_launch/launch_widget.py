@@ -34,6 +34,7 @@
 # Author: Isaac Saito
 
 import os
+import shlex
 import sys
 
 from python_qt_binding import loadUi
@@ -109,6 +110,9 @@ class LaunchWidget(QDialog):
         self._combobox_launchfile_name.currentIndexChanged[str].connect(
             self._load_launchfile_slot
         )
+        self._lineedit_args.editingFinished.connect(self._store_launchargs)
+        self._lineedit_args.editingFinished.connect(self._update_pkgs_contain_launchfiles)
+        self._load_launchargs()
         self._update_pkgs_contain_launchfiles()
 
     def _load_launchfile_slot(self, launchfile_name):
@@ -168,12 +172,16 @@ class LaunchWidget(QDialog):
         except IndexError as e:
             raise RLException('IndexError: {}'.format(e))
 
+        launchargs = shlex.split(self._lineedit_args.text())
+
         try:
             launch_config = roslaunch.config.load_config_default(
-                [launchfile], port_roscore
+                [(launchfile, launchargs)], port_roscore
             )
         except rospkg.common.ResourceNotFound as e:
-            raise RLException('ResourceNotFound: {}'.format(e))
+            raise RLException(f'ResourceNotFound: {e}')
+        except FileNotFoundError as e:
+            raise RLException(f'FileNotFoundError: {e}')
         except RLException as e:
             raise e
 
@@ -272,6 +280,13 @@ class LaunchWidget(QDialog):
             index = 0
         self._launchfile_update = False
         self._combobox_launchfile_name.setCurrentIndex(index)
+
+    def _store_launchargs(self):
+        self._settings.setValue('launchargs', self._lineedit_args.text())
+        self._settings.sync()
+
+    def _load_launchargs(self):
+        self._lineedit_args.setText(self._settings.value('launchargs', ''))
 
     def load_parameters(self):
         """
