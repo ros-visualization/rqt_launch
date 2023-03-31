@@ -1,3 +1,4 @@
+# coding=utf-8
 # Software License Agreement (BSD License)
 #
 # Copyright (c) 2012, Willow Garage, Inc.
@@ -40,54 +41,58 @@ from rqt_launch.node_widget import NodeWidget
 
 
 class NodeDelegate(QStyledItemDelegate):
-    __slots__ = ['status_label', 'respawn_toggle', 'spawn_count_label',
-                 'launch_prefix_edit']
+    __slots__ = [
+        'status_label',
+        'respawn_toggle',
+        'spawn_count_label',
+        'launch_prefix_edit',
+    ]
 
     def __init__(self, master_uri, rospack=None):
-                # respawn_toggle, spawn_count_label, launch_prefix_edit):
+        # respawn_toggle, spawn_count_label, launch_prefix_edit):
         super(NodeDelegate, self).__init__()
         self._master_uri = master_uri
 
         self._rospack = rospack
-        if rospack == None:
+        if rospack is None:
             self._rospack = rospkg.RosPack()
 
         self._nodewidget_dict = {}  # { QModelIndex : QWidget }
 
-    def createEditor(self, parent, option, index):
-        '''Overridden'''
-
-        nodewidget = self._nodewidget_dict[index]
-        # TODO: handle exception
-        return nodewidget
+    def createEditor(self, _parent, _option, index):
+        try:
+            nodewidget = self._nodewidget_dict[index]
+        except KeyError:
+            return None
+        else:
+            return nodewidget
 
     def setEditorData(self, spinBox, index):
-        '''Overridden'''
         value = index.model().data(index, Qt.EditRole)
 
         spinBox.setValue(value)
 
     def setModelData(self, spinBox, model, index):
-        '''Overridden'''
         spinBox.interpretText()
         value = spinBox.value()
 
         model.setData(index, value, Qt.EditRole)
 
     def updateEditorGeometry(self, editor, option, index):
-        '''Overridden'''
         editor.setGeometry(option.rect)
 
-    def create_node_widget(self, qindex, launch_config,
-                           status_label):
-        '''
+    def create_node_widget(self, qindex, launch_config, status_label):
+        """
         @type status_label: StatusIndicator
-        '''
-        nodewidget = NodeWidget(self._rospack,
-                                self._master_uri, launch_config,
-                                status_label)
+        """
+        nodewidget = NodeWidget(
+            self._rospack, self._master_uri, launch_config, status_label
+        )
         self._nodewidget_dict[qindex] = nodewidget
         return nodewidget
+
+    def clear_node_widgets(self):
+        self._nodewidget_dict.clear()
 
     def get_node_widget(self):
         return self._node_widget

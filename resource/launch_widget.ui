@@ -29,6 +29,23 @@
       <widget class="QComboBox" name="_combobox_launchfile_name"/>
      </item>
      <item>
+       <widget class="QLabel" name="_label_args">
+         <property name="text">
+           <string>Args:</string>
+         </property>
+       </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="_lineedit_args"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="_pushbutton_refresh">
+       <property name="text">
+        <string>&amp;Refresh</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="_pushbutton_load_params">
        <property name="text">
         <string>&amp;LOAD PARAMS</string>
@@ -44,9 +61,6 @@
      </item>
      <item>
       <widget class="QPushButton" name="_pushbutton_stop_all">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
        <property name="text">
         <string>STO&amp;P ALL</string>
        </property>
