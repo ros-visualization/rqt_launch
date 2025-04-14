@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<launch>
+  <node pkg="rqt_launch" type="rqt_launch" name="rqt_launch" output="screen" />
+</launch>

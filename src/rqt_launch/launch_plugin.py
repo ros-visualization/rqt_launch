@@ -1,3 +1,4 @@
+# coding=utf-8
 # Software License Agreement (BSD License)
 #
 # Copyright (c) 2012, Willow Garage, Inc.
@@ -38,11 +39,10 @@ from rqt_launch.launch_main import LaunchMain
 
 
 class LaunchPlugin(Plugin):
-
     def __init__(self, context):
-        '''
+        """
         :type context: qt_gui.PluginContext
-        '''
+        """
 
         super(LaunchPlugin, self).__init__(context)
 
@@ -50,8 +50,9 @@ class LaunchPlugin(Plugin):
 
         self._widget = self._main.get_widget()
         if context.serial_number() > 1:
-            self._widget.setWindowTitle(self._widget.windowTitle() +
-                                        (' (%d)' % context.serial_number()))
+            self._widget.setWindowTitle(
+                self._widget.windowTitle() + (' (%d)' % context.serial_number())
+            )
         context.add_widget(self._widget)
 
     def shutdown_plugin(self):
