@@ -4,7 +4,7 @@
   schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>rqt_launch</name>
-  <version>0.4.9</version>
+  <version>0.4.10</version>
   <description>This rqt plugin ROS package provides easy view of .launch files.
   User can also start and end node by node that are defined in those files.
   </description>

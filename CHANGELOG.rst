@@ -2,6 +2,11 @@
 Changelog for package rqt_launch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.4.10 (2025-05-09)
+-------------------
+* Improve: Bump cmake_minimum_required to avoid deprecation (`#26 <https://github.com/ros-visualization/rqt_launch/issues/26>`_)
+* Fix: retire distutils.core (`#25 <https://github.com/ros-visualization/rqt_launch/issues/25>`_)
+
 0.4.9 (2020-10-13)
 ------------------
 * fix shebang line for Python 3 (`#24 <https://github.com/ros-visualization/rqt_launch/issues/24>`_)
